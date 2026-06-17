@@ -104,6 +104,12 @@ IA_Camanchaca_ChatBot/
 elif pagina == "Chatbot":
     st.markdown('<p class="main-header">🤖 Chatbot Camanchaca</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">Consulta el clima y condiciones operativas de los centros de cultivo</p>', unsafe_allow_html=True)
+    st.info("""**💡 Ejemplos de preguntas:**
+    • ¿Cuál es el clima actual en Ensenada?
+    • ¿Cómo viene el pronóstico semanal para Puelche?
+    • ¿Qué centro tiene mejores condiciones hoy para cosecha?
+    • Dame el pronóstico de los 3 centros para esta semana
+    • ¿Hay alertas climáticas en Huito?""")
     st.markdown("---")
 
     CENTROS = {
