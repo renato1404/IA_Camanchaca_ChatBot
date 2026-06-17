@@ -1,5 +1,17 @@
 import os
+import re
+import json
+import time
+import requests
+from typing import List, Optional
+from dataclasses import dataclass, field
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
+from langgraph.prebuilt import create_react_agent
 import streamlit as st
+
+load_dotenv()
 
 st.set_page_config(
     page_title="IA Camanchaca - Sistema de Agentes",
@@ -26,7 +38,7 @@ st.sidebar.markdown("## 🐟 Camanchaca IA")
 st.sidebar.markdown("---")
 pagina = st.sidebar.radio(
     "Navegación",
-    ["Inicio", "Notebooks", "Arquitectura", "Observabilidad", "Seguridad", "Despliegue"],
+    ["Inicio", "Chatbot", "Notebooks", "Arquitectura", "Observabilidad", "Seguridad", "Despliegue"],
 )
 
 if pagina == "Inicio":
@@ -88,6 +100,105 @@ IA_Camanchaca_ChatBot/
 ├── requirements.txt
 └── .env
     """)
+
+elif pagina == "Chatbot":
+    st.markdown('<p class="main-header">🤖 Chatbot Camanchaca</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">Consulta el clima y condiciones operativas de los centros de cultivo</p>', unsafe_allow_html=True)
+    st.markdown("---")
+
+    CENTROS = {
+        "ensenada": {"lat": -41.140459, "lon": -72.404236, "nombre": "Piscicultura Petrohué"},
+        "puelche":  {"lat": -41.733,    "lon": -73.602,    "nombre": "Centro Puelche"},
+        "huito":    {"lat": -41.783,    "lon": -73.583,    "nombre": "Centro Huito (San José)"},
+    }
+
+    @tool
+    def get_clima_actual(centro: str) -> str:
+        """Obtiene el clima actual para un centro de cultivo de Camanchaca. centro: ensenada, puelche, huito."""
+        if centro.lower() not in CENTROS:
+            return f"Centro '{centro}' no encontrado. Opciones: ensenada, puelche, huito."
+        datos = CENTROS[centro.lower()]
+        url = (f"https://api.open-meteo.com/v1/forecast"
+               f"?latitude={datos['lat']}&longitude={datos['lon']}"
+               f"&current=temperature_2m,wind_speed_10m,precipitation,weathercode"
+               f"&timezone=America/Santiago")
+        try:
+            response = requests.get(url, timeout=10)
+            data = response.json()
+            current = data["current"]
+            temp = current["temperature_2m"]
+            viento = current["wind_speed_10m"]
+            lluvia = current["precipitation"]
+            codigo = current["weathercode"]
+            condicion = "Despejado" if codigo < 3 else "Nublado" if codigo < 50 else "Lluvia"
+            return (f"Centro: {datos['nombre']}\nTemperatura: {temp}°C\n"
+                    f"Viento: {viento} km/h\nPrecipitación: {lluvia} mm\nCondición: {condicion}")
+        except Exception as e:
+            return f"Error al obtener datos: {e}"
+
+    @tool
+    def get_pronostico_semana(centro: str) -> str:
+        """Obtiene el pronóstico semanal para un centro. centro: ensenada, puelche, huito."""
+        if centro.lower() not in CENTROS:
+            return f"Centro '{centro}' no encontrado."
+        datos = CENTROS[centro.lower()]
+        url = (f"https://api.open-meteo.com/v1/forecast"
+               f"?latitude={datos['lat']}&longitude={datos['lon']}"
+               f"&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weathercode"
+               f"&timezone=America/Santiago")
+        try:
+            response = requests.get(url, timeout=10)
+            data = response.json()
+            daily = data["daily"]
+            resultado = f"Pronóstico 7 días - {datos['nombre']}:\n"
+            for i in range(7):
+                fecha = daily["time"][i]
+                tmax = daily["temperature_2m_max"][i]
+                tmin = daily["temperature_2m_min"][i]
+                lluvia = daily["precipitation_sum"][i]
+                viento = daily["wind_speed_10m_max"][i]
+                codigo = daily["weathercode"][i]
+                condicion = "Despejado" if codigo < 3 else "Nublado" if codigo < 50 else "Lluvia"
+                resultado += f"\n{fecha}: {tmin}°C-{tmax}°C | Viento: {viento} km/h | Lluvia: {lluvia} mm | {condicion}"
+            return resultado
+        except Exception as e:
+            return f"Error: {e}"
+
+    tools_agente = [get_clima_actual, get_pronostico_semana]
+
+    agente_llm = ChatOpenAI(
+        base_url=os.getenv("OPENAI_BASE_URL"),
+        api_key=os.getenv("GITHUB_TOKEN"),
+        model="gpt-4o",
+        temperature=0,
+        request_timeout=600,
+    )
+
+    agent_executor = create_react_agent(agente_llm, tools_agente)
+
+    if "mensajes" not in st.session_state:
+        st.session_state.mensajes = []
+
+    for msg in st.session_state.mensajes:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    if prompt := st.chat_input("Ej: ¿Cuál es el clima actual en Ensenada?"):
+        st.session_state.mensajes.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        with st.chat_message("assistant"):
+            with st.spinner("Consultando agente Camanchaca..."):
+                try:
+                    response = agent_executor.invoke({
+                        "messages": [{"role": "user", "content": prompt}]
+                    })
+                    respuesta = response["messages"][-1].content
+                except Exception as e:
+                    respuesta = f"Error al procesar la consulta: {e}"
+            st.markdown(respuesta)
+            st.session_state.mensajes.append({"role": "assistant", "content": respuesta})
 
 elif pagina == "Notebooks":
     st.markdown('<p class="main-header">📓 Explorador de Notebooks</p>', unsafe_allow_html=True)
