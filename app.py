@@ -165,7 +165,6 @@ elif pagina == "Chatbot":
             return f"Error: {e}"
 
     tools_agente = [get_clima_actual, get_pronostico_semana]
-
     agente_llm = ChatOpenAI(
         base_url=os.getenv("OPENAI_BASE_URL"),
         api_key=os.getenv("GITHUB_TOKEN"),
@@ -173,11 +172,36 @@ elif pagina == "Chatbot":
         temperature=0,
         request_timeout=600,
     )
-
     agent_executor = create_react_agent(agente_llm, tools_agente)
+
+    PATRONES_INJECTION = [
+        r"ignora(?:r)?\s+(?:las\s+)?instrucciones", r"olvida(?:r)?\s+tus\s+instrucciones",
+        r"eres\s+ahora\s+un", r"revela\s+tu\s+system\s*prompt",
+        r"actua\s+como\s+si\s+no\s+tuvieras\s+reglas", r"sin\s+restricciones",
+        r"bypassea(?:r)?\s+las?\s+seguridad", r"ignora\s+todas?\s+las?\s+reglas",
+    ]
+    PATRONES_PII = {
+        "correo": re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"),
+        "telefono": re.compile(r"(?:\+56\s?)?(?:9\s?\d{4}\s?\d{4}|\d{2}\s?\d{3}\s?\d{4})"),
+        "rut": re.compile(r"\b\d{1,2}\.?\d{3}\.?\d{3}-?[\dkK]\b"),
+    }
+
+    def validar_entrada(texto):
+        if not texto or not texto.strip():
+            return False, "Entrada vacía."
+        for patron in PATRONES_INJECTION:
+            if re.search(patron, texto.lower()):
+                return False, "Intento de prompt injection detectado."
+        return True, ""
+
+    def sanitizar_pii(texto):
+        for tipo, patron in PATRONES_PII.items():
+            texto = patron.sub(f"[{tipo.upper()}_REDACTADO]", texto)
+        return texto
 
     if "mensajes" not in st.session_state:
         st.session_state.mensajes = []
+        st.session_state.historial = []
 
     for msg in st.session_state.mensajes:
         with st.chat_message(msg["role"]):
@@ -188,17 +212,28 @@ elif pagina == "Chatbot":
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        with st.chat_message("assistant"):
-            with st.spinner("Consultando agente Camanchaca..."):
-                try:
-                    response = agent_executor.invoke({
-                        "messages": [{"role": "user", "content": prompt}]
-                    })
-                    respuesta = response["messages"][-1].content
-                except Exception as e:
-                    respuesta = f"Error al procesar la consulta: {e}"
-            st.markdown(respuesta)
+        valida, motivo = validar_entrada(prompt)
+        if not valida:
+            respuesta = f"🚫 {motivo}"
+            with st.chat_message("assistant"):
+                st.markdown(respuesta)
             st.session_state.mensajes.append({"role": "assistant", "content": respuesta})
+        else:
+            prompt_limpio = sanitizar_pii(prompt)
+            st.session_state.historial.append(("human", prompt_limpio))
+            historial_para_agente = st.session_state.historial[-6:]
+
+            with st.chat_message("assistant"):
+                with st.spinner("Consultando agente Camanchaca..."):
+                    try:
+                        response = agent_executor.invoke({"messages": historial_para_agente})
+                        respuesta = response["messages"][-1].content
+                        respuesta = sanitizar_pii(respuesta)
+                    except Exception as e:
+                        respuesta = f"Error al procesar la consulta."
+                st.markdown(respuesta)
+                st.session_state.mensajes.append({"role": "assistant", "content": respuesta})
+                st.session_state.historial.append(("ai", respuesta))
 
 elif pagina == "Notebooks":
     st.markdown('<p class="main-header">📓 Explorador de Notebooks</p>', unsafe_allow_html=True)
