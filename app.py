@@ -737,7 +737,7 @@ elif pagina == "Chatbot":
         api_key=os.getenv("GITHUB_TOKEN"),
         model="gpt-4o",
         temperature=0,
-        timeout=600,
+        request_timeout=600,
     )
     agent_executor = create_react_agent(agente_llm, tools_agente)
 
