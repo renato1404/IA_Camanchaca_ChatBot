@@ -94,7 +94,7 @@ if page == "Inicio":
 
 elif page == "ChatBot":
     st.title("💬 ChatBot Climático")
-    st.markdown("Consulta el clima en tiempo real para los centros de cultivo.")
+    st.markdown("Consulta el clima actual o el pronóstico semanal de los centros de cultivo **Ensenada** (Piscicultura Petrohué), **Puelche** y **Huito** (San José). Pregunta por temperatura, viento, precipitaciones o condiciones generales para tomar decisiones operativas informadas.")
 
     for msg in st.session_state.mensajes:
         with st.chat_message(msg["role"]):
