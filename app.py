@@ -55,7 +55,10 @@ PAGINAS = ["Inicio", "ChatBot", "Centros"]
 ICONOS = {"Inicio": "🏠", "ChatBot": "💬", "Centros": "📍"}
 
 with st.sidebar:
-    st.image("assets/logo-cc-web-celeste.png", width=160) if os.path.exists("assets/logo-cc-web-celeste.png") else st.markdown("# 🌊")
+    if os.path.exists("assets/logo-cc-web-celeste.png"):
+        st.image("assets/logo-cc-web-celeste.png", width=160)
+    else:
+        st.markdown("# 🌊")
     st.markdown("**Salmones Camanchaca**  \nMonitoreo Climático")
     st.divider()
     for p in PAGINAS:
