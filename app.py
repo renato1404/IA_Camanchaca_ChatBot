@@ -163,70 +163,14 @@ hr { border-color: var(--outline-variant) !important; margin: 24px 0 !important;
 .stInfo { background: #e8f0fe !important; border: 1px solid #c5d9f2 !important; border-radius: var(--radius-md) !important; font-family: var(--font-body) !important; font-size: 13px !important; color: var(--on-surface-variant) !important; }
 .st-emotion-cache-1gwvy38, .element-container:has(>div>div>.stSidebarNavItems) { display: none; }
 
-.quick-actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-.quick-action-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px; background: var(--surface-bright); border: 1px solid var(--outline-variant);
-  border-radius: 9999px; font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  color: var(--on-surface-variant); cursor: pointer;
-  transition: all 0.2s ease; white-space: nowrap;
-}
-.quick-action-btn:hover { border-color: var(--primary-container); color: var(--primary-container); }
-.quick-action-btn span { font-size: 16px; }
+.chat-msg-user { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.chat-msg-user > div { background: var(--surface-container-high); color: var(--on-surface); padding: 12px 18px; border-radius: 18px 18px 4px 18px; max-width: 70%; font-family: var(--font-body); font-size: 14px; line-height: 1.5; box-shadow: var(--shadow-sm); }
+.chat-msg-ai { display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px; }
+.chat-msg-ai .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-container); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.chat-msg-ai .avatar span { color: var(--on-primary); font-size: 18px; }
+.chat-msg-ai .bubble { background: var(--surface-bright); padding: 14px 18px; border-radius: 18px 18px 18px 4px; max-width: 70%; font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--on-surface); box-shadow: var(--shadow-sm); border: 1px solid var(--outline-variant); }
 
-.chat-container { max-width: 900px; margin: 0 auto; padding: 0 4px; }
-.chat-msg { display: flex; margin-bottom: 20px; animation: fadeIn 0.3s ease-out forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.chat-msg.user { justify-content: flex-end; }
-.chat-msg.ai { justify-content: flex-start; gap: 12px; }
-.chat-msg .avatar {
-  width: 40px; height: 40px; border-radius: 50%; background: var(--primary-container);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm);
-}
-.chat-msg .avatar span { color: var(--on-primary); font-size: 20px; }
-.chat-msg .bubble {
-  padding: 14px 18px; max-width: 72%; font-family: var(--font-body); font-size: 14px; line-height: 1.6;
-  color: var(--on-surface); box-shadow: var(--shadow-sm);
-}
-.chat-msg.user .bubble {
-  background: var(--surface-container-high); border-radius: 18px 18px 4px 18px;
-}
-.chat-msg.ai .bubble {
-  background: var(--surface-bright); border-radius: 18px 18px 18px 4px; border: 1px solid var(--outline-variant);
-}
-.chat-msg .timestamp {
-  display: block; font-family: var(--font-body); font-size: 11px; color: var(--on-surface-variant); opacity: 0.6; margin-top: 6px;
-}
-.chat-msg .feedback { display: flex; gap: 4px; margin-top: 8px; padding-left: 4px; }
-.chat-msg .feedback button {
-  width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent;
-  color: var(--on-surface-variant); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s; opacity: 0.5;
-}
-.chat-msg .feedback button:hover { background: var(--surface-container-high); opacity: 1; }
-.chat-msg .feedback button span { font-size: 18px; }
-
-.data-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 14px; }
-.data-card {
-  background: var(--surface-container-lowest, #fff); border: 1px solid var(--outline-variant);
-  border-radius: var(--radius-lg); padding: 14px 16px; box-shadow: var(--shadow-sm); transition: all 0.2s ease;
-}
-.data-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.data-card .dc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.data-card .dc-header span:first-child { font-size: 20px; color: var(--secondary); }
-.data-card .dc-label { font-family: var(--font-body); font-size: 11px; font-weight: 600; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.04em; }
-.data-card .dc-value { font-family: var(--font-heading); font-size: 22px; font-weight: 700; color: var(--primary); line-height: 1.3; }
-.data-card .dc-bar { height: 4px; background: var(--secondary-container); border-radius: 999px; margin-top: 8px; overflow: hidden; }
-.data-card .dc-bar-fill { height: 100%; background: var(--secondary); border-radius: 999px; }
-.data-card.optimal { border-color: rgba(30,126,52,0.3); background: rgba(230,244,234,0.4); }
-.data-card.optimal .dc-value { color: var(--success); }
-.data-card.optimal .dc-label { color: var(--success); }
-
-.stChatFloatingInputContainer, div[data-testid="stChatInput"] {
-  border: 1.5px solid var(--outline-variant) !important; border-radius: var(--radius-2xl) !important;
-  background: var(--surface-bright) !important; box-shadow: var(--shadow-sm) !important;
-  padding: 6px 6px 6px 16px !important; max-width: 800px !important; margin: 0 auto !important;
-}
+div[data-testid="stChatInput"] { border: 1.5px solid var(--outline-variant) !important; border-radius: var(--radius-lg) !important; background: var(--surface-bright) !important; box-shadow: var(--shadow-sm) !important; padding: 4px !important; }
 div[data-testid="stChatInput"]:focus-within { border-color: var(--primary-container) !important; box-shadow: 0 0 0 3px rgba(0,85,150,0.1) !important; }
 div[data-testid="stChatInput"] input { font-family: var(--font-body) !important; font-size: 14px !important; }
 </style>
@@ -244,9 +188,6 @@ st.sidebar.markdown("""
 
 pagina = st.sidebar.radio("Navegación", ["Inicio","Chatbot","Notebooks","Arquitectura","Observabilidad","Seguridad","Despliegue"], label_visibility="collapsed")
 
-if pagina == "Chatbot":
-    st.sidebar.markdown(f'<button class="sidebar-btn" onclick="alert(\'Nuevo análisis\')"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:6px">add</span> New Analysis</button>', unsafe_allow_html=True)
-
 st.sidebar.markdown("""
 <div class="sidebar-footer">
     <a><span class="material-symbols-outlined">help_center</span> Support</a>
@@ -260,6 +201,20 @@ def encabezado(titulo, subtitulo=None):
 
 # ─── CHATBOT ─────────────────────────────────────────────────────────────────
 if pagina == "Chatbot":
+    encabezado("Chatbot Camanchaca", "CONSULTA CLIMÁTICA Y OPERATIVA")
+
+    st.markdown("""
+    <div class="glass-card" style="background:var(--surface-container-low)">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+            <span class="badge badge-info">💡 Pronóstico 7 días</span>
+            <span class="badge badge-info">🌡️ Clima actual</span>
+            <span class="badge badge-info">🌊 Estado de centros</span>
+            <span class="badge badge-info">⚠️ Alertas climáticas</span>
+        </div>
+        <p style="margin:0;font-size:13px"><strong>Ejemplos:</strong> "¿Cuál es el clima actual en Ensenada?" • "¿Cómo viene el pronóstico semanal para Puelche?" • "¿Hay alertas climáticas en Huito?"</p>
+    </div>
+    """, unsafe_allow_html=True)
+
     CENTROS = {
         "ensenada": {"lat": -41.140459, "lon": -72.404236, "nombre": "Piscicultura Petrohué"},
         "puelche":  {"lat": -41.733,    "lon": -73.602,    "nombre": "Centro Puelche"},
@@ -274,9 +229,9 @@ if pagina == "Chatbot":
         try:
             r = requests.get(url, timeout=10).json()["current"]
             cond = "Despejado" if r["weathercode"] < 3 else "Nublado" if r["weathercode"] < 50 else "Lluvia"
-            return f"{{\"centro\":\"{datos['nombre']}\",\"temp\":{r['temperature_2m']},\"viento\":{r['wind_speed_10m']},\"lluvia\":{r['precipitation']},\"condicion\":\"{cond}\"}}"
+            return f"Centro: {datos['nombre']}\nTemperatura: {r['temperature_2m']}°C\nViento: {r['wind_speed_10m']} km/h\nPrecipitación: {r['precipitation']} mm\nCondición: {cond}"
         except Exception as e:
-            return f'{{"error":"{e}"}}'
+            return f"Error al obtener datos: {e}"
 
     def _get_pronostico_semana(centro: str) -> str:
         if centro.lower() not in CENTROS:
@@ -285,16 +240,16 @@ if pagina == "Chatbot":
         url = f"https://api.open-meteo.com/v1/forecast?latitude={datos['lat']}&longitude={datos['lon']}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weathercode&timezone=America/Santiago"
         try:
             d = requests.get(url, timeout=10).json()["daily"]
-            items = []
+            res = f"Pronóstico 7 días - {datos['nombre']}:\n"
             for i in range(7):
                 c = "Despejado" if d["weathercode"][i] < 3 else "Nublado" if d["weathercode"][i] < 50 else "Lluvia"
-                items.append({"fecha":d["time"][i],"tmax":d["temperature_2m_max"][i],"tmin":d["temperature_2m_min"][i],"lluvia":d["precipitation_sum"][i],"viento":d["wind_speed_10m_max"][i],"condicion":c})
-            return json.dumps({"centro":datos['nombre'],"dias":items})
+                res += f"\n{d['time'][i]}: {d['temperature_2m_min'][i]}°C-{d['temperature_2m_max'][i]}°C | Viento: {d['wind_speed_10m_max'][i]} km/h | Lluvia: {d['precipitation_sum'][i]} mm | {c}"
+            return res
         except Exception as e:
-            return f'{{"error":"{e}"}}'
+            return f"Error: {e}"
 
     tools_agente = [
-        StructuredTool.from_function(func=_get_clima_actual, name="get_clima_actual", description="Obtiene el clima actual para un centro. Parametro: ensenada, puelche, huito."),
+        StructuredTool.from_function(func=_get_clima_actual, name="get_clima_actual", description="Obtiene el clima actual para un centro de cultivo de Camanchaca. Parametro: ensenada, puelche, huito."),
         StructuredTool.from_function(func=_get_pronostico_semana, name="get_pronostico_semana", description="Obtiene el pronostico de 7 dias para un centro. Parametro: ensenada, puelche, huito."),
     ]
     agent_executor = create_react_agent(
@@ -302,104 +257,50 @@ if pagina == "Chatbot":
         tools_agente,
     )
 
-    INJECTION = [r"ignora(?:r)?\s+(?:las\s+)?instrucciones", r"olvida(?:r)?\s+tus\s+instrucciones", r"eres\s+ahora\s+un", r"revela\s+tu\s+system\s*prompt", r"actua\s+como\s+si\s+no\s+tuvieras\s+reglas", r"sin\s+restricciones", r"bypassea(?:r)?\s+las?\s+seguridad", r"ignora\s+todas?\s+las?\s+reglas"]
-    PII = {"correo": re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"), "telefono": re.compile(r"(?:\+56\s?)?(?:9\s?\d{4}\s?\d{4}|\d{2}\s?\d{3}\s?\d{4})"), "rut": re.compile(r"\b\d{1,2}\.?\d{3}\.?\d{3}-?[\dkK]\b")}
+    PATRONES_INJECTION = [r"ignora(?:r)?\s+(?:las\s+)?instrucciones", r"olvida(?:r)?\s+tus\s+instrucciones", r"eres\s+ahora\s+un", r"revela\s+tu\s+system\s*prompt", r"actua\s+como\s+si\s+no\s+tuvieras\s+reglas", r"sin\s+restricciones", r"bypassea(?:r)?\s+las?\s+seguridad", r"ignora\s+todas?\s+las?\s+reglas"]
+    PATRONES_PII = {"correo": re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"), "telefono": re.compile(r"(?:\+56\s?)?(?:9\s?\d{4}\s?\d{4}|\d{2}\s?\d{3}\s?\d{4})"), "rut": re.compile(r"\b\d{1,2}\.?\d{3}\.?\d{3}-?[\dkK]\b")}
 
-    def validar(t): return (False, "Intento de prompt injection detectado.") if any(re.search(p, t.lower()) for p in INJECTION) else (True, "")
-    def sanitizar(t):
-        for p in PII.values(): t = p.sub("[PII_REDACTADO]", t)
-        return t
+    def validar_entrada(texto):
+        if not texto or not texto.strip(): return False, "Entrada vacía."
+        for p in PATRONES_INJECTION:
+            if re.search(p, texto.lower()): return False, "Intento de prompt injection detectado."
+        return True, ""
+
+    def sanitizar_pii(texto):
+        for p in PATRONES_PII.values(): texto = p.sub("[PII_REDACTADO]", texto)
+        return texto
 
     if "mensajes" not in st.session_state:
         st.session_state.mensajes = []
         st.session_state.historial = []
 
-    def render_data_cards(data_text):
-        try:
-            d = json.loads(data_text)
-            if "temp" in d:
-                temp_pct = min(100, max(0, int((d["temp"] / 30) * 100)))
-                wind_pct = min(100, max(0, int((d["viento"] / 50) * 100)))
-                return f"""
-                <div class="data-cards">
-                    <div class="data-card">
-                        <div class="dc-header"><span class="material-symbols-outlined">device_thermostat</span><span class="dc-label">Temperatura</span></div>
-                        <div class="dc-value">{d['temp']}°C</div>
-                        <div class="dc-bar"><div class="dc-bar-fill" style="width:{temp_pct}%"></div></div>
-                    </div>
-                    <div class="data-card">
-                        <div class="dc-header"><span class="material-symbols-outlined">air</span><span class="dc-label">Viento</span></div>
-                        <div class="dc-value">{d['viento']} km/h</div>
-                        <div class="dc-bar"><div class="dc-bar-fill" style="width:{wind_pct}%"></div></div>
-                    </div>
-                    <div class="data-card optimal">
-                        <div class="dc-header"><span class="material-symbols-outlined">check_circle</span><span class="dc-label">Estado</span></div>
-                        <div class="dc-value">{d['condicion']}</div>
-                        <p style="font-size:11px;color:var(--success);margin:4px 0 0;font-weight:500">Safe to proceed</p>
-                    </div>
-                </div>
-                """
-        except: pass
-        try:
-            d = json.loads(data_text)
-            if "dias" in d:
-                items = "".join(f'<div class="data-card" style="text-align:center;padding:10px"><div class="dc-label">{di["fecha"][-5:]}</div><div class="dc-value" style="font-size:16px">{di["tmin"]}°-{di["tmax"]}°</div><div style="font-size:11px;color:var(--on-surface-variant)">{di["condicion"]}</div></div>' for di in d["dias"])
-                return f'<div class="data-cards" style="grid-template-columns:repeat(7,1fr)">{items}</div>'
-        except: pass
-        return ""
-
-    def render_msg(msg):
-        role = msg["role"]
-        content = msg["content"]
-        ts = time.strftime("%I:%M %p")
-        if role == "user":
-            return f'<div class="chat-msg user"><div class="bubble">{content}<span class="timestamp">{ts}</span></div></div>'
-        cards = render_data_cards(content) if "temp" in content or "dias" in content else ""
-        return f'''
-        <div class="chat-msg ai">
-            <div class="avatar"><span class="material-symbols-outlined">smart_toy</span></div>
-            <div>
-                <div class="bubble">{content}{cards}</div>
-                <div class="feedback">
-                    <button><span class="material-symbols-outlined">thumb_up</span></button>
-                    <button><span class="material-symbols-outlined">thumb_down</span></button>
-                    <button><span class="material-symbols-outlined">content_copy</span></button>
-                </div>
-            </div>
-        </div>'''
-
-    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-
-    st.markdown('<div class="quick-actions">', unsafe_allow_html=True)
-    for label, icon in [("Pronóstico 7 días","calendar_month"), ("Estado de Jaulas","grid_view"), ("Análisis de Oxígeno","bubble_chart")]:
-        st.markdown(f'<button class="quick-action-btn" onclick="navigator.clipboard.writeText(\'{label}\')"><span class="material-symbols-outlined">{icon}</span>{label}</button>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
     for msg in st.session_state.mensajes:
-        st.markdown(render_msg(msg), unsafe_allow_html=True)
+        if msg["role"] == "user":
+            st.markdown(f'<div class="chat-msg-user"><div>{msg["content"]}</div></div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="chat-msg-ai"><div class="avatar"><span class="material-symbols-outlined">smart_toy</span></div><div class="bubble">{msg["content"]}</div></div>', unsafe_allow_html=True)
 
-    if prompt := st.chat_input("Describe una consulta o solicita un reporte..."):
+    if prompt := st.chat_input("Ej: ¿Cuál es el clima actual en Ensenada?"):
         st.session_state.mensajes.append({"role": "user", "content": prompt})
-        st.markdown(render_msg({"role": "user", "content": prompt}), unsafe_allow_html=True)
+        st.markdown(f'<div class="chat-msg-user"><div>{prompt}</div></div>', unsafe_allow_html=True)
 
-        valida, motivo = validar(prompt)
+        valida, motivo = validar_entrada(prompt)
         if not valida:
             respuesta = f"🚫 {motivo}"
-            st.markdown(render_msg({"role": "assistant", "content": respuesta}), unsafe_allow_html=True)
+            st.markdown(f'<div class="chat-msg-ai"><div class="avatar"><span class="material-symbols-outlined">smart_toy</span></div><div class="bubble">{respuesta}</div></div>', unsafe_allow_html=True)
             st.session_state.mensajes.append({"role": "assistant", "content": respuesta})
         else:
-            st.session_state.historial.append(("human", sanitizar(prompt)))
-            with st.spinner("Analizando datos en tiempo real..."):
+            prompt_limpio = sanitizar_pii(prompt)
+            st.session_state.historial.append(("human", prompt_limpio))
+            with st.spinner("Consultando agente Camanchaca..."):
                 try:
                     response = agent_executor.invoke({"messages": st.session_state.historial[-6:]})
-                    respuesta = sanitizar(response["messages"][-1].content)
+                    respuesta = sanitizar_pii(response["messages"][-1].content)
                 except Exception as e:
                     respuesta = "Error al procesar la consulta."
-            st.markdown(render_msg({"role": "assistant", "content": respuesta}), unsafe_allow_html=True)
+            st.markdown(f'<div class="chat-msg-ai"><div class="avatar"><span class="material-symbols-outlined">smart_toy</span></div><div class="bubble">{respuesta}</div></div>', unsafe_allow_html=True)
             st.session_state.mensajes.append({"role": "assistant", "content": respuesta})
             st.session_state.historial.append(("ai", respuesta))
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # ─── INICIO ──────────────────────────────────────────────────────────────────
 elif pagina == "Inicio":
