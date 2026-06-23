@@ -7,7 +7,7 @@ from typing import List, Optional
 from dataclasses import dataclass, field
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain_core.tools import tool
+from langchain_core.tools import StructuredTool
 from langgraph.prebuilt import create_react_agent
 import streamlit as st
 
@@ -681,8 +681,7 @@ elif pagina == "Chatbot":
         "huito":    {"lat": -41.783,    "lon": -73.583,    "nombre": "Centro Huito (San José)"},
     }
 
-    @tool
-    def get_clima_actual(centro: str) -> str:
+    def _get_clima_actual(centro: str) -> str:
         if centro.lower() not in CENTROS:
             return f"Centro '{centro}' no encontrado. Opciones: ensenada, puelche, huito."
         datos = CENTROS[centro.lower()]
@@ -704,8 +703,7 @@ elif pagina == "Chatbot":
         except Exception as e:
             return f"Error al obtener datos: {e}"
 
-    @tool
-    def get_pronostico_semana(centro: str) -> str:
+    def _get_pronostico_semana(centro: str) -> str:
         if centro.lower() not in CENTROS:
             return f"Centro '{centro}' no encontrado."
         datos = CENTROS[centro.lower()]
@@ -731,7 +729,18 @@ elif pagina == "Chatbot":
         except Exception as e:
             return f"Error: {e}"
 
-    tools_agente = [get_clima_actual, get_pronostico_semana]
+    tools_agente = [
+        StructuredTool.from_function(
+            func=_get_clima_actual,
+            name="get_clima_actual",
+            description="Obtiene el clima actual para un centro de cultivo de Camanchaca. Parametro: ensenada, puelche, huito.",
+        ),
+        StructuredTool.from_function(
+            func=_get_pronostico_semana,
+            name="get_pronostico_semana",
+            description="Obtiene el pronostico de 7 dias para un centro. Parametro: ensenada, puelche, huito.",
+        ),
+    ]
     agente_llm = ChatOpenAI(
         base_url=os.getenv("OPENAI_BASE_URL"),
         api_key=os.getenv("GITHUB_TOKEN"),
