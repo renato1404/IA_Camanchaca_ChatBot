@@ -51,8 +51,8 @@ if "agente" not in st.session_state:
     st.session_state.agente = create_react_agent(llm, [get_clima_actual, get_pronostico_semana])
 
 EMOJIS = {"Despejado": "☀️", "Nublado": "☁️", "Lluvia": "🌧️"}
-PAGINAS = ["Inicio", "ChatBot", "Centros", "Seguridad"]
-ICONOS = {"Inicio": "🏠", "ChatBot": "💬", "Centros": "📍", "Seguridad": "🛡️"}
+PAGINAS = ["Inicio", "ChatBot", "Centros"]
+ICONOS = {"Inicio": "🏠", "ChatBot": "💬", "Centros": "📍"}
 
 with st.sidebar:
     st.image("assets/logo-cc-web-celeste.png", width=160) if os.path.exists("assets/logo-cc-web-celeste.png") else st.markdown("# 🌊")
@@ -141,20 +141,4 @@ elif page == "Centros":
                     st.markdown(f"**Precipitación:** {datos['lluvia']} mm")
                     st.markdown(f"**Condición:** {datos['condicion']}")
 
-elif page == "Seguridad":
-    st.title("🛡️ Seguridad")
-    st.markdown("Pipeline de seguridad del asistente.")
 
-    items = [
-        ("1", "Validación de entrada", "Rechaza consultas vacías y detecta 6 patrones de inyección de prompt."),
-        ("2", "Sanitización PII", "Redacta correos, teléfonos chilenos y RUTs antes de enviar al LLM."),
-        ("3", "Herramientas acotadas", "El agente solo puede consultar clima y pronóstico, sin acceso a código arbitrario."),
-        ("4", "Memoria acotada", "Solo los últimos 6 mensajes se envían al agente, limitando el contexto."),
-    ]
-    for num, titulo, desc in items:
-        with st.container(border=True):
-            st.markdown(f"**{num}. {titulo}**  \n{desc}")
-
-    with st.container(border=True):
-        st.markdown("**🔒 OWASP LLM Top 10**")
-        st.markdown("El sistema implementa controles para **LLM01 (Prompt Injection)** vía detección de patrones, **LLM06 (Sensitive Information Disclosure)** vía sanitización PII, y **LLM07 (Insecure Plugin Design)** mediante herramientas acotadas.")
