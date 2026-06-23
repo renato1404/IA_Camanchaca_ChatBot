@@ -22,6 +22,14 @@ if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 if "mensajes" not in st.session_state:
     st.session_state.mensajes = []
+@tool
+def get_clima_actual(centro: str) -> str:
+    return formatear_clima(_get_c(centro))
+
+@tool
+def get_pronostico_semana(centro: str) -> str:
+    return formatear_pronostico(_get_p(centro))
+
 if "agente" not in st.session_state:
     llm = ChatOpenAI(
         base_url=os.getenv("OPENAI_BASE_URL"),
@@ -30,15 +38,6 @@ if "agente" not in st.session_state:
         temperature=0,
         request_timeout=600,
     )
-
-    @tool
-    def get_clima_actual(centro: str) -> str:
-        return formatear_clima(_get_c(centro))
-
-    @tool
-    def get_pronostico_semana(centro: str) -> str:
-        return formatear_pronostico(_get_p(centro))
-
     st.session_state.agente = create_react_agent(llm, [get_clima_actual, get_pronostico_semana])
 
 EMOJIS = {"Despejado": "☀️", "Nublado": "☁️", "Lluvia": "🌧️"}
