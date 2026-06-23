@@ -12,7 +12,7 @@ from clima_utils import (
     formatear_clima,
     formatear_pronostico,
     formatear_marino,
-    viento_dir_texto,
+    dir_a_texto,
     validar_entrada,
     sanitizar_pii,
 )
@@ -42,19 +42,19 @@ def _marino_func(centro: str) -> str:
 get_clima_actual = StructuredTool.from_function(
     func=_clima_func,
     name="get_clima_actual",
-    description="Obtiene el clima actual con temperatura, humedad, viento, UV y precipitación. Parámetro: ensenada, puelche o huito.",
+    description="Obtiene el clima actual con temperatura, humedad, viento (velocidad y dirección), índice UV nivel y precipitación. Parámetro: ensenada, puelche o huito.",
 )
 
 get_pronostico_semana = StructuredTool.from_function(
     func=_pronos_func,
     name="get_pronostico_semana",
-    description="Obtiene el pronóstico de 7 días con temperatura, viento, lluvia y probabilidad de precipitación. Parámetro: ensenada, puelche o huito.",
+    description="Obtiene el pronóstico de 7 días con temperatura min/max, viento, lluvia, probabilidad de lluvia, dirección del viento dominante y horas de sol (salida/puesta). Parámetro: ensenada, puelche o huito.",
 )
 
 get_condiciones_marinas = StructuredTool.from_function(
     func=_marino_func,
     name="get_condiciones_marinas",
-    description="Obtiene condiciones marinas: altura de ola, período, swell y temperatura del agua superficial. Parámetro: ensenada, puelche o huito.",
+    description="Obtiene condiciones marinas: temperatura del agua superficial, altura y dirección de ola, período de ola, altura/dirección/período de swell. Parámetro: ensenada, puelche o huito.",
 )
 
 tools = [get_clima_actual, get_pronostico_semana, get_condiciones_marinas]
@@ -63,9 +63,10 @@ SYSTEM_PROMPT = (
     "Eres un asistente experto en monitoreo climático y oceanográfico para Salmones Camanchaca. "
     "Responde en español de forma clara y profesional. "
     "Centros disponibles: Ensenada (Piscicultura Petrohué), Puelche, Huito (San José). "
-    "Tienes 3 herramientas: clima actual (temp, humedad, viento, UV, lluvia), "
-    "pronóstico semanal (7 días con prob. de lluvia), y condiciones marinas (ola, swell, temp. agua). "
-    "Usa las herramientas según lo que pregunte el usuario."
+    "Tienes 3 herramientas: clima actual (temp, humedad, viento con dirección, UV con nivel, lluvia), "
+    "pronóstico semanal (7 días, prob. lluvia, viento dominante, salida/puesta del sol), "
+    "y condiciones marinas (temp. agua, altura/dirección/período de ola y swell). "
+    "Usa la herramienta adecuada según la consulta."
 )
 
 if "agente" not in st.session_state:
@@ -106,19 +107,19 @@ if page == "Inicio":
     col1, col2, col3 = st.columns(3)
     col1.metric("Centros de Cultivo", "3", "Ensenada · Puelche · Huito")
     col2.metric("Herramientas IA", "3", "Clima · Pronóstico · Marino")
-    col3.metric("Variables", "12+", "Temp. agua, olas, UV, humedad")
+    col3.metric("Variables en vivo", "15+", "Atmósfera + océano + sol")
 
     with st.container(border=True):
         st.markdown("**🌊 Nuevo: Condiciones Marinas**")
-        st.markdown("Ahora puedes consultar **temperatura del agua superficial**, **altura de olas**, **período del oleaje** y **altura de swell** para cada centro, gracias a la integración con Open-Meteo Marine API.")
+        st.markdown("Altura de olas, dirección y período del oleaje, altura de swell, temperatura del agua superficial. Datos vía Open-Meteo Marine API.")
+
+    with st.container(border=True):
+        st.markdown("**🌡️ Más variables atmosféricas**")
+        st.markdown("Humedad relativa, índice UV con nivel de riesgo, dirección del viento en formato cardinal (N/S/E/O), probabilidad de precipitación, horas de salida y puesta del sol.")
 
     with st.container(border=True):
         st.markdown("**📍 Centros de Cultivo**")
-        st.markdown("El sistema monitorea las condiciones atmosféricas y marinas en tres centros de la Región de Los Lagos: **Piscicultura Petrohué** (Ensenada), **Centro Puelche** y **Centro Huito (San José)**.")
-
-    with st.container(border=True):
-        st.markdown("**🤖 Arquitectura del Agente**")
-        st.markdown("Agente **ReAct** con LangGraph + 3 herramientas especializadas. El historial se mantiene en memoria de sesión.")
+        st.markdown("**Piscicultura Petrohué** (Ensenada), **Centro Puelche** y **Centro Huito (San José)** en la Región de Los Lagos.")
 
     if st.button("💬 Ir al ChatBot", type="primary", use_container_width=True):
         st.session_state.pagina = "ChatBot"
@@ -126,7 +127,7 @@ if page == "Inicio":
 
 elif page == "ChatBot":
     st.title("💬 ChatBot Climático y Marino")
-    st.markdown("Consulta el clima actual, pronóstico semanal o condiciones marinas de **Ensenada**, **Puelche** y **Huito**. Pregunta por temperatura, viento, humedad, UV, lluvia, altura de olas, swell o temperatura del agua para decisiones operativas.")
+    st.markdown("Pregunta por clima actual, pronóstico semanal o condiciones marinas de **Ensenada**, **Puelche** o **Huito**: temperatura, humedad, viento (velocidad y dirección), índice UV, lluvia, probabilidad de lluvia, salida/puesta del sol, altura y período de olas, swell, temperatura del agua.")
 
     for msg in st.session_state.mensajes:
         with st.chat_message(msg["role"]):
@@ -158,7 +159,7 @@ elif page == "ChatBot":
 
 elif page == "Centros":
     st.title("📍 Centros de Cultivo")
-    st.markdown("Información atmosférica y marina en vivo de cada centro.")
+    st.markdown("Datos atmosféricos y marinos en vivo de cada centro.")
 
     cols = st.columns(3)
     for i, (key, info) in enumerate(CENTROS.items()):
@@ -175,14 +176,21 @@ elif page == "Centros":
                     st.markdown(f"🌡️ **{clima['temp']}°C** — {clima['condicion']}")
                     if clima.get("humedad") is not None:
                         st.markdown(f"💧 Humedad: {clima['humedad']}%")
-                    dir_txt = viento_dir_texto(clima.get("viento_dir"))
-                    viento_str = f"{clima['viento']} km/h {dir_txt}" if dir_txt else f"{clima['viento']} km/h"
-                    st.markdown(f"🌬️ Viento: {viento_str}")
+                    dir_txt = dir_a_texto(clima.get("viento_dir"))
+                    v_str = f"{clima['viento']} km/h {dir_txt}" if dir_txt else f"{clima['viento']} km/h"
+                    st.markdown(f"🌬️ Viento: {v_str}")
                     st.markdown(f"🌧️ Lluvia: {clima['lluvia']} mm")
                     if clima.get("uv") is not None:
-                        st.markdown(f"☀️ UV: {clima['uv']}")
+                        nivel = "Bajo" if clima["uv"] < 3 else "Moderado" if clima["uv"] < 6 else "Alto" if clima["uv"] < 8 else "Muy alto"
+                        st.markdown(f"☀️ UV: {clima['uv']} ({nivel})")
                     if "error" not in marino:
+                        if marino.get("temp_agua") is not None:
+                            st.markdown(f"🌡️ Agua: {marino['temp_agua']}°C")
                         if marino.get("ola_altura") is not None:
-                            st.markdown(f"🌊 Ola: {marino['ola_altura']} m")
-                        if marino.get("agua_temp_max") is not None:
-                            st.markdown(f"💧 Agua: {marino['agua_temp_min']}°C-{marino['agua_temp_max']}°C")
+                            d = dir_a_texto(marino.get("ola_direccion"))
+                            ola = f"{marino['ola_altura']} m" + (f" {d}" if d else "")
+                            st.markdown(f"🌊 Ola: {ola} / {marino.get('ola_periodo','?')}s")
+                        if marino.get("swell_altura") is not None:
+                            d = dir_a_texto(marino.get("swell_direccion"))
+                            sw = f"{marino['swell_altura']} m" + (f" {d}" if d else "")
+                            st.markdown(f"📈 Swell: {sw} / {marino.get('swell_periodo','?')}s")
