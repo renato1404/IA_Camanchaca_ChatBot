@@ -1,0 +1,323 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Salmones Camanchaca - AI Operations Suite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Hanken+Grotesk:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#004f6b",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#373d40",
+                    "primary-fixed-dim": "#a2c9ff",
+                    "surface-tint": "#1b60a2",
+                    "inverse-primary": "#a2c9ff",
+                    "on-background": "#1b1c1c",
+                    "surface-container-low": "#f5f3f3",
+                    "primary": "#003e6f",
+                    "surface-container-highest": "#e4e2e2",
+                    "primary-container": "#005596",
+                    "inverse-surface": "#303030",
+                    "tertiary-fixed": "#dee3e6",
+                    "surface-dim": "#dbd9d9",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#eae8e7",
+                    "on-secondary": "#ffffff",
+                    "outline": "#727781",
+                    "on-primary-fixed-variant": "#004881",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#77d1ff",
+                    "secondary-container": "#43c5fd",
+                    "on-secondary-fixed-variant": "#004d68",
+                    "on-tertiary-fixed": "#171c1f",
+                    "inverse-on-surface": "#f2f0f0",
+                    "outline-variant": "#c1c7d2",
+                    "background": "#fbf9f8",
+                    "on-tertiary": "#ffffff",
+                    "surface-variant": "#e4e2e2",
+                    "on-tertiary-fixed-variant": "#42484a",
+                    "on-surface": "#1b1c1c",
+                    "on-primary-fixed": "#001c38",
+                    "surface": "#fbf9f8",
+                    "surface-bright": "#fbf9f8",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#d3e4ff",
+                    "on-secondary-fixed": "#001e2c",
+                    "on-primary-container": "#a4caff",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#4f5457",
+                    "surface-container": "#efeded",
+                    "on-tertiary-container": "#c3c8cb",
+                    "on-surface-variant": "#414750",
+                    "secondary": "#006688",
+                    "tertiary-fixed-dim": "#c2c7ca",
+                    "secondary-fixed": "#c2e8ff",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "margin-desktop": "40px",
+                    "container-max": "1280px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c7d2;
+            border-radius: 10px;
+        }
+        .message-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col py-base shadow-md z-50 bg-secondary-fixed"><div class="px-6 py-4">
+<img alt="Salmones Camanchaca Logo" class="w-full h-auto mb-6" src="assets/logo-cc-web-celeste.png">
+<div class="space-y-1">
+<p class="font-headline-md text-headline-md font-bold text-primary">Salmones Camanchaca</p>
+<p class="font-label-md text-label-md text-primary/60 tracking-wider">AI OPERATIONS SUITE</p>
+</div>
+</div>
+<nav class="flex-1 mt-4 space-y-1">
+<a class="flex items-center px-6 py-3 text-primary/80 hover:bg-primary/10 rounded-lg mx-2 my-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-primary/80 hover:bg-primary/10 rounded-lg mx-2 my-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="tsunami">tsunami</span>
+<span class="font-body-md text-body-md">Climate Forecast</span>
+</a>
+<a class="flex items-center px-6 py-3 text-primary/80 hover:bg-primary/10 rounded-lg mx-2 my-1 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings_suggest">settings_suggest</span>
+<span class="font-body-md text-body-md">Operations</span>
+</a>
+<a class="flex items-center px-6 py-3 bg-primary text-on-primary rounded-lg mx-2 my-1" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="history">history</span>
+<span class="font-body-md text-body-md">Chat History</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 bg-primary text-on-primary font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Analysis
+            </button>
+<div class="mt-4 pt-4 border-t border-primary/10">
+<a class="flex items-center px-4 py-2 text-primary/70 hover:text-primary font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help_center">help_center</span> Support
+                </a>
+<a class="flex items-center px-4 py-2 text-primary/70 hover:text-primary font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span> Settings
+                </a>
+</div>
+</div></aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex flex-col h-screen">
+<!-- Top App Bar -->
+<header class="h-16 flex justify-between items-center px-gutter bg-surface border-b border-outline-variant shadow-sm z-40">
+<div class="flex items-center gap-4">
+<h1 class="font-headline-md text-headline-md font-semibold text-primary">Climate AI Assistant</h1>
+<span class="bg-primary/10 text-primary text-label-md px-2 py-0.5 rounded-full">BETA</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-sm w-64 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Search insights..." type="text">
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-primary transition-opacity relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="hover:text-primary transition-opacity">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Chat Container -->
+<section class="flex-1 overflow-hidden flex flex-col bg-background relative">
+<!-- Message List -->
+<div class="flex-1 overflow-y-auto px-gutter py-8 custom-scrollbar space-y-8">
+<!-- User Message -->
+<div class="flex justify-end message-fade-in">
+<div class="max-w-2xl bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-tr-none shadow-sm border border-outline-variant">
+<p class="font-body-md">¿Cuáles son las condiciones climáticas actuales para realizar la cosecha en el centro Estero Cupquelán?</p>
+<span class="block text-right text-label-md text-on-surface-variant mt-2">10:42 AM</span>
+</div>
+</div>
+<!-- AI Response -->
+<div class="flex justify-start message-fade-in">
+<div class="flex gap-4 max-w-4xl">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-md">
+<span class="material-symbols-outlined text-on-primary" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="space-y-4">
+<div class="bg-white p-6 rounded-2xl rounded-tl-none shadow-sm border border-outline-variant">
+<p class="font-body-md text-on-surface leading-relaxed">
+                                    Analizando datos en tiempo real para <strong>Estero Cupquelán</strong>. Las condiciones actuales son favorables para las operaciones de cosecha. Se observa una ventana de estabilidad climática para las próximas 6 horas.
+                                </p>
+<!-- Data Cards Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary" data-icon="device_thermostat">device_thermostat</span>
+<span class="text-label-md font-bold text-on-surface-variant uppercase">Temperatura</span>
+</div>
+<div class="text-headline-md font-bold text-primary">12°C</div>
+<div class="h-1 w-full bg-secondary-fixed rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-3/4"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary" data-icon="air">air</span>
+<span class="text-label-md font-bold text-on-surface-variant uppercase">Viento</span>
+</div>
+<div class="text-headline-md font-bold text-primary">15 knots</div>
+<div class="h-1 w-full bg-secondary-fixed rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-1/2"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl flex flex-col gap-2 ring-1 ring-inset ring-green-500/20 bg-green-50/30" style="transform: translateY(0px); transition: 0.2s ease-out;">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-green-600" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-md font-bold text-green-700 uppercase">Estado</span>
+</div>
+<div class="text-headline-md font-bold text-green-600">OPTIMAL</div>
+<p class="text-label-md text-green-700/70">Safe to proceed</p>
+</div>
+</div>
+<p class="font-body-md text-on-surface mt-6">
+                                    Recomendación: Iniciar maniobras de posicionamiento de Wellboat antes de las 13:00 hrs para aprovechar la marea baja.
+                                </p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="thumb_up">thumb_up</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="thumb_down">thumb_down</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-gutter bg-surface border-t border-outline-variant">
+<!-- Quick Actions -->
+<div class="flex gap-3 mb-4 overflow-x-auto pb-2 custom-scrollbar">
+<button class="shrink-0 px-4 py-2 bg-white border border-outline-variant rounded-full text-body-sm font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_month">calendar_month</span>
+                        Pronóstico 7 días
+                    </button>
+<button class="shrink-0 px-4 py-2 bg-white border border-outline-variant rounded-full text-body-sm font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="grid_view">grid_view</span>
+                        Estado de Jaulas
+                    </button>
+<button class="shrink-0 px-4 py-2 bg-white border border-outline-variant rounded-full text-body-sm font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="bubble_chart">bubble_chart</span>
+                        Análisis de Oxígeno
+                    </button>
+</div>
+<!-- Input Field -->
+<div class="relative max-w-5xl mx-auto flex gap-4">
+<div class="flex-1 relative group">
+<textarea class="w-full pl-6 pr-12 py-4 bg-surface-container-lowest border border-outline-variant rounded-2xl text-body-md focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none shadow-sm" placeholder="Describe una consulta o solicita un reporte..." rows="1"></textarea>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+</div>
+<button class="bg-primary hover:bg-primary-container text-on-primary w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-primary/20 transition-all active:scale-95 shrink-0">
+<span class="material-symbols-outlined text-[28px]" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<p class="text-center text-label-md text-on-surface-variant mt-3">Camanchaca AI can make mistakes. Verify critical operational data.</p>
+</div>
+</section>
+<!-- Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center py-4 px-gutter bg-surface-container-low border-t border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface-variant">© 2024 Salmones Camanchaca. AI-Driven Aquaculture Excellence.</span>
+<div class="flex gap-6 mt-2 md:mt-0">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary hover:underline transition-all" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary hover:underline transition-all" href="#">Sustainability Report</a>
+</div>
+</footer>
+</main>
+<script>
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if (this.scrollHeight > 200) {
+                this.style.overflowY = 'auto';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+        document.querySelectorAll('.bg-surface-container-lowest').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('shadow-md');
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'all 0.2s ease-out';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('shadow-md');
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+    </script>
+</body></html>
