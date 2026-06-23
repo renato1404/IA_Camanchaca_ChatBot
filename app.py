@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain_core.tools import tool
+from langchain_core.tools import StructuredTool
 from langgraph.prebuilt import create_react_agent
 from clima_utils import (
     CENTROS, get_clima_actual as _get_c, get_pronostico_semana as _get_p,
@@ -22,13 +22,23 @@ if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 if "mensajes" not in st.session_state:
     st.session_state.mensajes = []
-@tool
-def get_clima_actual(centro: str) -> str:
+def _clima_func(centro: str) -> str:
     return formatear_clima(_get_c(centro))
 
-@tool
-def get_pronostico_semana(centro: str) -> str:
+def _pronos_func(centro: str) -> str:
     return formatear_pronostico(_get_p(centro))
+
+get_clima_actual = StructuredTool.from_function(
+    func=_clima_func,
+    name="get_clima_actual",
+    description="Obtiene el clima actual. Parámetro: ensenada, puelche o huito.",
+)
+
+get_pronostico_semana = StructuredTool.from_function(
+    func=_pronos_func,
+    name="get_pronostico_semana",
+    description="Obtiene el pronóstico de 7 días. Parámetro: ensenada, puelche o huito.",
+)
 
 if "agente" not in st.session_state:
     llm = ChatOpenAI(
