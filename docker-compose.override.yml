@@ -1,0 +1,31 @@
+# Desarrollo — se fusiona automáticamente con docker-compose.yml al ejecutar:
+#   docker compose up
+# No requiere -f explícito.
+
+services:
+  chatbot:
+    # Montar código fuente para hot-reload
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    environment:
+      - STREAMLIT_SERVER_FILE_WATCHER_TYPE=poll
+      - STREAMLIT_SERVER_RUN_ON_SAVE=true
+      - STREAMLIT_LOGGER_LEVEL=debug
+    # stdin_open y tty para poder hacer Ctrl+C
+    stdin_open: true
+    tty: true
+    # Comando con flags adicionales para desarrollo
+    command:
+      - streamlit
+      - run
+      - app.py
+      - --server.port
+      - "8501"
+      - --server.address
+      - "0.0.0.0"
+      - --server.fileWatcherType
+      - poll
+      - --server.runOnSave
+      - "true"

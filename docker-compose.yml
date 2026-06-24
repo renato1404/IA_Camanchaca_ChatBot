@@ -1,11 +1,25 @@
 services:
   chatbot:
+    container_name: camanchaca-chatbot
     build: .
     ports:
       - "8501:8501"
     env_file:
       - .env
-    environment:
-      - LANGSMITH_TRACING=${LANGSMITH_TRACING}
-      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT}
     restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+            - .git/
+            - .gitignore
+            - __pycache__/
+            - "*.pyc"
+            - ".ipynb"
+            - "*.md"
+            - README.md
+        - action: rebuild
+          path: requirements.txt
