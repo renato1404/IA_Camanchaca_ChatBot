@@ -23,12 +23,12 @@ if not os.getenv("OPENAI_BASE_URL") or not os.getenv("GITHUB_TOKEN"):
 
 @tool
 def get_clima_actual(centro: str) -> str:
-    """Obtiene el clima actual. Parámetro: ensenada, puelche o huito."""
+    """Obtiene el clima actual con temperatura, humedad relativa, viento (velocidad y dirección cardinal N/S/E/O), índice UV con nivel de riesgo, precipitación, probabilidad de precipitación y horas de sol. Parámetro: ensenada, puelche o huito."""
     return formatear_clima(_get_clima(centro))
 
 @tool
 def get_pronostico_semana(centro: str) -> str:
-    """Obtiene el pronóstico de 7 días. Parámetro: ensenada, puelche o huito."""
+    """Obtiene el pronóstico de 7 días con temperatura min/max, viento, lluvia, probabilidad de precipitación, dirección del viento dominante en formato cardinal (N/S/E/O) y horas de salida/puesta del sol. Parámetro: ensenada, puelche o huito."""
     return formatear_pronostico(_get_pronos(centro))
 
 llm = ChatOpenAI(

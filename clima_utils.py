@@ -25,6 +25,7 @@ RE_PII = {
 
 CODIGOS_CLIMA = lambda c: "Despejado" if c < 3 else "Nublado" if c < 50 else "Lluvia"
 DIR_16 = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+DIR_4 = ["N","E","S","W"]
 
 def validar_entrada(texto):
     if not texto or not texto.strip():
@@ -43,6 +44,24 @@ def dir_a_texto(grados):
     if grados is None:
         return None
     return DIR_16[round(grados / 22.5) % 16]
+
+def dir_a_cardinal(grados):
+    if grados is None:
+        return None
+    return DIR_4[round(grados / 90) % 4]
+
+def uv_nivel(valor):
+    if valor is None:
+        return None
+    if valor < 3:
+        return "Bajo"
+    if valor < 6:
+        return "Moderado"
+    if valor < 8:
+        return "Alto"
+    if valor < 11:
+        return "Muy alto"
+    return "Extremo"
 
 @lru_cache(maxsize=8)
 def _fetch_atmosfera(lat, lon):
@@ -69,7 +88,9 @@ def get_clima_actual(centro: str) -> dict:
         return {"error": f"Centro '{centro}' no encontrado."}
     d = CENTROS[centro.lower()]
     try:
-        r = _fetch_atmosfera(d["lat"], d["lon"])["current"]
+        data = _fetch_atmosfera(d["lat"], d["lon"])
+        r = data["current"]
+        daily = data.get("daily", {})
         return {
             "centro": d["nombre"], "region": d["region"],
             "temp": r["temperature_2m"],
@@ -80,6 +101,9 @@ def get_clima_actual(centro: str) -> dict:
             "uv": r.get("uv_index"),
             "codigo": r["weathercode"],
             "condicion": CODIGOS_CLIMA(r["weathercode"]),
+            "prob_lluvia": (daily.get("precipitation_probability_max") or [None])[0],
+            "sunrise": (daily.get("sunrise") or [""])[0],
+            "sunset": (daily.get("sunset") or [""])[0],
         }
     except Exception as e:
         return {"error": f"Error al obtener datos: {e}"}
@@ -137,13 +161,18 @@ def formatear_clima(datos: dict) -> str:
     if datos.get("humedad") is not None:
         lineas.append(f"Humedad: {datos['humedad']}%")
     v = f"Viento: {datos['viento']} km/h"
-    d = dir_a_texto(datos.get("viento_dir"))
-    if d: v += f" ({d})"
+    d16 = dir_a_texto(datos.get("viento_dir"))
+    d4 = dir_a_cardinal(datos.get("viento_dir"))
+    if d4: v += f" {d4} ({d16})"
     lineas.append(v)
     lineas.append(f"Precipitación: {datos['lluvia']} mm")
+    if datos.get("prob_lluvia") is not None:
+        lineas.append(f"Probabilidad de precipitación: {datos['prob_lluvia']}%")
     if datos.get("uv") is not None:
-        nivel = "Bajo" if datos["uv"] < 3 else "Moderado" if datos["uv"] < 6 else "Alto" if datos["uv"] < 8 else "Muy alto"
+        nivel = uv_nivel(datos["uv"])
         lineas.append(f"Índice UV: {datos['uv']} ({nivel})")
+    if datos.get("sunrise"):
+        lineas.append(f"Sol: {datos['sunrise'][-5:]} – {datos['sunset'][-5:]}")
     lineas.append(f"Condición: {datos['condicion']}")
     return "\n".join(lineas)
 
@@ -154,7 +183,7 @@ def formatear_pronostico(datos: dict) -> str:
     for d in datos["dias"]:
         extras = []
         if d.get("prob_lluvia") is not None: extras.append(f"Prob. lluvia: {d['prob_lluvia']}%")
-        v_dir = dir_a_texto(d.get("viento_dom"))
+        v_dir = dir_a_cardinal(d.get("viento_dom"))
         if v_dir: extras.append(f"Viento {v_dir}")
         if d.get("sunrise"): extras.append(f"Sol: {d['sunrise'][-5:]}‑{d['sunset'][-5:]}")
         extra = f" | {', '.join(extras)}" if extras else ""
